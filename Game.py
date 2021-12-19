@@ -1,14 +1,10 @@
-from Snake import Game
-from Frames import Game_Window
-
-class Program():
+class Game():
 
     def __init__(self):
-        self.window = Game_Window(self)
+        self.snake = Snake()
 
-    def new_game(self):
-        self.game = Game(self)
-        
+class Snake():
 
-if __name__ == "__main__":
-    program = Program()
+    def __init__(self):
+        self.length = 1
+        self.orientation = [0, 1]
