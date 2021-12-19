@@ -1,5 +1,4 @@
 from tkinter import *
-from typing import List
 
 '''
 The class is the window of the program. It contains all the different frames to display.
@@ -7,7 +6,8 @@ This class also holds all the game options (this may need to ba changed later)
 '''
 class Game_Window(Tk):
 
-    def __init__(self):
+    def __init__(self, program):
+        self.program = program
 
         super().__init__()
         self.title("Snake")
@@ -33,10 +33,15 @@ class Game_Window(Tk):
         self.menu_frame.forget()
 
     def show_game(self):
-        self.geometry("1000x600")
+        height = 600 + self.game_frame.top_bar.winfo_height() # TODO Hardcoded value to change
+        width = 1000 # TODO Hardcoded value to change
+        self.geometry(f"{width}x{height}+10+10")
         self.resizable(0, 0)
+        print(self.game_frame.get_game_board_dimensions())
+        print(self.game_frame.top_bar.winfo_height())
         self.game_frame.grid(sticky = NSEW)
         print(self.game_frame.get_game_board_dimensions())
+        print(self.game_frame.top_bar.winfo_height())
 
 
     def hide_game(self):
@@ -53,7 +58,6 @@ class Game_Window(Tk):
     def stop_game(self):
         self.hide_game()
         self.show_menu()
-
 
 class Menu_Frame(Frame):
 
@@ -104,21 +108,22 @@ class Game_Frame(Frame):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight = 1)
 
-        top_bar = Frame(self, background = "#00B93E")
-        top_bar.columnconfigure(10, weight = 1)
-        back_button = Button(top_bar, text = "Return to Menu", command = self.back_to_menu)
+        self.top_bar = Frame(self, background = "#00B93E")
+        self.top_bar.columnconfigure(10, weight = 1)
+        back_button = Button(self.top_bar, text = "Return to Menu", command = self.back_to_menu)
         back_button.grid(column = 0, row = 0)
-        points = Label(top_bar, text = "1")
+        points = Label(self.top_bar, text = "1")
         points.grid(column = 10, row = 0)
-        top_bar.grid(sticky = EW)
+        self.top_bar.grid(sticky = EW)
 
-        self.game_board = Canvas(self, background="green")
+        self.game_board = Canvas(self, background="green", highlightthickness = 0)
         self.game_board.grid(column = 0, row = 1, sticky = NSEW)
+        self.game_board.create_oval(0, 0, 80, 80)
 
     def back_to_menu(self):
         self.master.stop_game()
 
-    def get_game_board_dimensions(self) -> List:
+    def get_game_board_dimensions(self) -> list:
         master = self.master
         while master.master is not None: # Loop to get the highest level master
             master = master.master
