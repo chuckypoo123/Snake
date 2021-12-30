@@ -69,15 +69,15 @@ class Game_Window(Tk):
     def bind_all(self):
         self.bind("<space>", self.app.game.pause)
         # Arrow key binding
-        self.bind("<Right>", lambda event, dir = 0: self.app.game.orient_snake(event, dir))
-        self.bind("<Down>",    lambda event, dir = 1: self.app.game.orient_snake(event, dir))
-        self.bind("<Left>",  lambda event, dir = 2: self.app.game.orient_snake(event, dir))
-        self.bind("<Up>",  lambda event, dir = 3: self.app.game.orient_snake(event, dir))
+        self.bind("<Right>", lambda event, dir = 0: self.app.game.snake.change_orientation(event, dir))
+        self.bind("<Down>",    lambda event, dir = 1: self.app.game.snake.change_orientation(event, dir))
+        self.bind("<Left>",  lambda event, dir = 2: self.app.game.snake.change_orientation(event, dir))
+        self.bind("<Up>",  lambda event, dir = 3: self.app.game.snake.change_orientation(event, dir))
         # WASD key bindings
-        self.bind("d",       lambda event, dir = 0: self.app.game.orient_snake(event, dir))
-        self.bind("s",       lambda event, dir = 1: self.app.game.orient_snake(event, dir))
-        self.bind("a",       lambda event, dir = 2: self.app.game.orient_snake(event, dir))
-        self.bind("w",       lambda event, dir = 3: self.app.game.orient_snake(event, dir))
+        self.bind("d",       lambda event, dir = 0: self.app.game.snake.change_orientation(event, dir))
+        self.bind("s",       lambda event, dir = 1: self.app.game.snake.change_orientation(event, dir))
+        self.bind("a",       lambda event, dir = 2: self.app.game.snake.change_orientation(event, dir))
+        self.bind("w",       lambda event, dir = 3: self.app.game.snake.change_orientation(event, dir))
 
 class Menu_Frame(Frame):
 
@@ -147,9 +147,6 @@ class Game_Frame(Frame):
         self.game_board = Canvas(self, background="green", highlightthickness = 0)
         self.game_board.grid(column = 0, row = 1, sticky = NSEW, padx = 3, pady = 3)
 
-        self.snake_head = self.game_board.create_arc(20, 100, 39, 119, start = 30, extent = 300, fill = "blue", width = 0)
-        self.snake_body = [self.game_board.create_oval(0, 100, 19, 119, fill = "blue")]
-
     def back_to_menu(self):
         self.master.stop_game()
 
@@ -159,30 +156,3 @@ class Game_Frame(Frame):
             master = master.master
         master.update()
         return [self.game_board.winfo_width(), self.game_board.winfo_height()]
-
-    def advance_snake(self, direction, eating):
-        # Getting coords of head
-        coords_of_head = self.game_board.coords(self.snake_head)
-
-        # Adding new bulb in place of head
-        self.snake_body.append(self.game_board.create_oval(coords_of_head, fill = "blue"))
-        
-        # Moving head
-        print(coords_of_head)
-        mod = direction % 2
-        
-        coords_of_head[mod]     += (-1)**(direction//2)*20
-        coords_of_head[mod + 2] += (-1)**(direction//2)*20
-
-        self.game_board.coords(self.snake_head, coords_of_head)
-
-        # Removing the last bulb
-        if not eating:
-            self.game_board.delete(self.snake_body.pop(0))
-
-        # This line updates the canvas
-        self.game_board.update_idletasks()
-
-    def change_snake_orientation(self, new_orientation):
-        self.game_board.itemconfig(tagOrId = self.snake_head, start = new_orientation + 30)
-        self.game_board.update_idletasks()
