@@ -69,15 +69,15 @@ class Game_Window(Tk):
     def bind_all(self):
         self.bind("<space>", self.app.game.pause)
         # Arrow key binding
-        self.bind("<Right>", lambda event, dir = 0: self.app.game.snake.change_orientation(event, dir))
-        self.bind("<Down>",    lambda event, dir = 1: self.app.game.snake.change_orientation(event, dir))
-        self.bind("<Left>",  lambda event, dir = 2: self.app.game.snake.change_orientation(event, dir))
-        self.bind("<Up>",  lambda event, dir = 3: self.app.game.snake.change_orientation(event, dir))
+        self.bind("<Right>", lambda event, dir = 0: self.app.game.snake.orient(event, dir))
+        self.bind("<Down>",    lambda event, dir = 1: self.app.game.snake.orient(event, dir))
+        self.bind("<Left>",  lambda event, dir = 2: self.app.game.snake.orient(event, dir))
+        self.bind("<Up>",  lambda event, dir = 3: self.app.game.snake.orient(event, dir))
         # WASD key bindings
-        self.bind("d",       lambda event, dir = 0: self.app.game.snake.change_orientation(event, dir))
-        self.bind("s",       lambda event, dir = 1: self.app.game.snake.change_orientation(event, dir))
-        self.bind("a",       lambda event, dir = 2: self.app.game.snake.change_orientation(event, dir))
-        self.bind("w",       lambda event, dir = 3: self.app.game.snake.change_orientation(event, dir))
+        self.bind("d",       lambda event, dir = 0: self.app.game.snake.orient(event, dir))
+        self.bind("s",       lambda event, dir = 1: self.app.game.snake.orient(event, dir))
+        self.bind("a",       lambda event, dir = 2: self.app.game.snake.orient(event, dir))
+        self.bind("w",       lambda event, dir = 3: self.app.game.snake.orient(event, dir))
 
 class Menu_Frame(Frame):
 
