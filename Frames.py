@@ -32,8 +32,8 @@ class Game_Window(Tk):
         self.menu_frame.forget()
 
     def show_game(self):
-        height = 600 + self.game_frame.top_bar.winfo_height() # TODO Hardcoded value to change
-        width = 1000 # TODO Hardcoded value to change
+        height = 600 + self.game_frame.toolbar.winfo_height() + 6 # TODO Hardcoded value to change
+        width = 1000 + 6 # TODO Hardcoded value to change
         self.geometry(f"{width}x{height}+10+10")
         self.resizable(0, 0)
         self.game_frame.grid(sticky = NSEW)
@@ -50,6 +50,16 @@ class Game_Window(Tk):
         self.show_game()
         self.app.new_game()
         self.bind_all()
+        self.game_frame.update()
+        self.game_frame.update_idletasks()
+        self.game_frame.game_board.update()
+        self.game_frame.game_board.update_idletasks()
+        print(self.winfo_height())
+        print(self.winfo_width())
+        print(self.game_frame.winfo_height())
+        print(self.game_frame.winfo_width())
+        print(self.game_frame.game_board.winfo_height())
+        print(self.game_frame.game_board.winfo_width())
 
     def stop_game(self):
         self.hide_game()
@@ -119,23 +129,26 @@ class Game_Frame(Frame):
         # Constants
         self.pixel_scale = 10
 
-        super().__init__(container, bg = "red")
+        super().__init__(container, bg = "green")
+        # Grid configuration
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight = 1)
 
-        self.top_bar = Frame(self, background = "#00B93E")
-        self.top_bar.columnconfigure(10, weight = 1)
-        back_button = Button(self.top_bar, text = "Return to Menu", command = self.back_to_menu)
+        # Creating toolbar
+        self.toolbar = Frame(self, background = "#00B93E")
+        self.toolbar.columnconfigure(10, weight = 1)
+        back_button = Button(self.toolbar, text = "Return to Menu", command = self.back_to_menu)
         back_button.grid(column = 0, row = 0)
-        points = Label(self.top_bar, text = "2")
+        points = Label(self.toolbar, text = "2")
         points.grid(column = 10, row = 0)
-        self.top_bar.grid(sticky = EW)
+        self.toolbar.grid(sticky = EW)
 
+        # Creating game canvas
         self.game_board = Canvas(self, background="green", highlightthickness = 0)
-        self.game_board.grid(column = 0, row = 1, sticky = NSEW)
+        self.game_board.grid(column = 0, row = 1, sticky = NSEW, padx = 3, pady = 3)
 
-        self.snake_head = self.game_board.create_arc(20, 100, 40, 120, start = 30, extent = 300, fill = "blue", width = 0)
-        self.snake_body = [self.game_board.create_oval(0, 100, 20, 120, fill = "blue")]
+        self.snake_head = self.game_board.create_arc(20, 100, 39, 119, start = 30, extent = 300, fill = "blue", width = 0)
+        self.snake_body = [self.game_board.create_oval(0, 100, 19, 119, fill = "blue")]
 
     def back_to_menu(self):
         self.master.stop_game()
@@ -148,7 +161,6 @@ class Game_Frame(Frame):
         return [self.game_board.winfo_width(), self.game_board.winfo_height()]
 
     def advance_snake(self, direction, eating):
-        # print("Request received")
         # Getting coords of head
         coords_of_head = self.game_board.coords(self.snake_head)
 

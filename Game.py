@@ -5,7 +5,7 @@ class Game():
 
     def __init__(self, app):
         self.app = app
-        self.snake = Snake()
+        self.snake = self.Snake()
         self.started = False
         self.unpaused = False
 
@@ -28,8 +28,8 @@ class Game():
         self.snake.orientation = new_orientation
         self.app.window.game_frame.change_snake_orientation(new_orientation*90)        
         
-class Snake():
+    class Snake():
 
-    def __init__(self):
-        self.orientation = 0
-        self.locations = []
+        def __init__(self):
+            self.orientation = 0
+            self.nodes = [] # Nodes are elements in the body of the Snake
