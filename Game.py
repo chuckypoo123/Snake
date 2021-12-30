@@ -26,7 +26,7 @@ class Game():
             return
 
         self.snake.orientation = new_orientation
-        self.app.window.game_frame.change_snake_orientation(new_orientation*90)        
+        self.app.window.game_frame.change_snake_orientation(new_orientation*-90)        
         
     class Snake():
 

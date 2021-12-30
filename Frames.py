@@ -70,14 +70,14 @@ class Game_Window(Tk):
         self.bind("<space>", self.app.game.pause)
         # Arrow key binding
         self.bind("<Right>", lambda event, dir = 0: self.app.game.orient_snake(event, dir))
-        self.bind("<Up>",    lambda event, dir = 1: self.app.game.orient_snake(event, dir))
+        self.bind("<Down>",    lambda event, dir = 1: self.app.game.orient_snake(event, dir))
         self.bind("<Left>",  lambda event, dir = 2: self.app.game.orient_snake(event, dir))
-        self.bind("<Down>",  lambda event, dir = 3: self.app.game.orient_snake(event, dir))
+        self.bind("<Up>",  lambda event, dir = 3: self.app.game.orient_snake(event, dir))
         # WASD key bindings
         self.bind("d",       lambda event, dir = 0: self.app.game.orient_snake(event, dir))
-        self.bind("w",       lambda event, dir = 1: self.app.game.orient_snake(event, dir))
+        self.bind("s",       lambda event, dir = 1: self.app.game.orient_snake(event, dir))
         self.bind("a",       lambda event, dir = 2: self.app.game.orient_snake(event, dir))
-        self.bind("s",       lambda event, dir = 3: self.app.game.orient_snake(event, dir))
+        self.bind("w",       lambda event, dir = 3: self.app.game.orient_snake(event, dir))
 
 class Menu_Frame(Frame):
 
@@ -129,7 +129,7 @@ class Game_Frame(Frame):
         # Constants
         self.pixel_scale = 10
 
-        super().__init__(container, bg = "green")
+        super().__init__(container, bg = "#00B93E")
         # Grid configuration
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight = 1)
@@ -170,12 +170,9 @@ class Game_Frame(Frame):
         # Moving head
         print(coords_of_head)
         mod = direction % 2
-        if direction % 2:
-            coords_of_head[mod]     += (-1)**(1-direction//2)*20
-            coords_of_head[mod + 2] += (-1)**(1-direction//2)*20
-        else:
-            coords_of_head[mod]     += (-1)**(direction//2)*20
-            coords_of_head[mod + 2] += (-1)**(direction//2)*20
+        
+        coords_of_head[mod]     += (-1)**(direction//2)*20
+        coords_of_head[mod + 2] += (-1)**(direction//2)*20
 
         self.game_board.coords(self.snake_head, coords_of_head)
 
