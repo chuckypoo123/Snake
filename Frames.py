@@ -22,8 +22,6 @@ class Game_Window(Tk):
 
         self.show_menu()
 
-        # self.mainloop()
-
     def show_menu(self):
         self.geometry("200x200")
         self.resizable(0, 0)
@@ -38,16 +36,7 @@ class Game_Window(Tk):
         width = 1000 # TODO Hardcoded value to change
         self.geometry(f"{width}x{height}+10+10")
         self.resizable(0, 0)
-        print(self.game_frame.get_game_board_dimensions())
-        print(self.game_frame.top_bar.winfo_height())
         self.game_frame.grid(sticky = NSEW)
-        print(self.game_frame.get_game_board_dimensions())
-        print(self.game_frame.top_bar.winfo_height())
-        # time.sleep(1)
-        # self.game_frame.advance_snake(0, False)
-        # time.sleep(1)
-        # self.game_frame.advance_snake(1, True)
-        return
 
     def hide_game(self):
         self.game_frame.grid_forget()
@@ -60,12 +49,25 @@ class Game_Window(Tk):
         self.hide_menu()
         self.show_game()
         self.app.new_game()
-        # print("show_game returned")
-        return
+        self.bind_all()
 
     def stop_game(self):
         self.hide_game()
         self.show_menu()
+        self.unbind("<space>")
+
+    def bind_all(self):
+        self.bind("<space>", self.app.game.pause)
+        # Arrow key binding
+        self.bind("<Right>", lambda event, dir = 0: self.app.game.orient_snake(event, dir))
+        self.bind("<Up>",    lambda event, dir = 1: self.app.game.orient_snake(event, dir))
+        self.bind("<Left>",  lambda event, dir = 2: self.app.game.orient_snake(event, dir))
+        self.bind("<Down>",  lambda event, dir = 3: self.app.game.orient_snake(event, dir))
+        # WASD key bindings
+        self.bind("d",       lambda event, dir = 0: self.app.game.orient_snake(event, dir))
+        self.bind("w",       lambda event, dir = 1: self.app.game.orient_snake(event, dir))
+        self.bind("a",       lambda event, dir = 2: self.app.game.orient_snake(event, dir))
+        self.bind("s",       lambda event, dir = 3: self.app.game.orient_snake(event, dir))
 
 class Menu_Frame(Frame):
 
@@ -146,7 +148,7 @@ class Game_Frame(Frame):
         return [self.game_board.winfo_width(), self.game_board.winfo_height()]
 
     def advance_snake(self, direction, eating):
-        print("Request received")
+        # print("Request received")
         # Getting coords of head
         coords_of_head = self.game_board.coords(self.snake_head)
 
@@ -155,9 +157,13 @@ class Game_Frame(Frame):
         
         # Moving head
         print(coords_of_head)
-        print(type(coords_of_head))
-        coords_of_head[direction % 2] += (-1)**(direction//2)*20
-        coords_of_head[(direction % 2) + 2] += (-1)**(direction//2)*20
+        mod = direction % 2
+        if direction % 2:
+            coords_of_head[mod]     += (-1)**(1-direction//2)*20
+            coords_of_head[mod + 2] += (-1)**(1-direction//2)*20
+        else:
+            coords_of_head[mod]     += (-1)**(direction//2)*20
+            coords_of_head[mod + 2] += (-1)**(direction//2)*20
 
         self.game_board.coords(self.snake_head, coords_of_head)
 
@@ -170,3 +176,4 @@ class Game_Frame(Frame):
 
     def change_snake_orientation(self, new_orientation):
         self.game_board.itemconfig(tagOrId = self.snake_head, start = new_orientation + 30)
+        self.game_board.update_idletasks()
