@@ -15,12 +15,21 @@ class Game_Window(Tk):
         self.configure(background = "blue")
         self.columnconfigure(0, weight = 1)
         self.rowconfigure(0, weight = 1)
+        self.protocol("WM_DELETE_WINDOW", self.kill_threads)
 
         self.menu_frame = Menu_Frame(self)
         self.game_frame = Game_Frame(self)
         self.options_frame = Options_Frame(self)
 
         self.show_menu()
+
+    def kill_threads(self):
+        if self.app.game is None:
+            return
+
+        self.app.game.paused = True
+        self.app.thread.join()
+        self.destroy()
 
     def show_menu(self):
         self.geometry("200x200")
@@ -127,14 +136,16 @@ class Game_Frame(Frame):
     def __init__(self, container):
 
         # Constants
-        self.pixel_scale = 10
+        self.pixel_scale = 20 # TODO not used
 
+        # self.bg_r = 
         super().__init__(container, bg = "#00B93E")
         # Grid configuration
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight = 1)
 
         # Creating toolbar
+        self.toolbar_colour = 0x00B93E
         self.toolbar = Frame(self, background = "#00B93E")
         self.toolbar.columnconfigure(10, weight = 1)
         back_button = Button(self.toolbar, text = "Return to Menu", command = self.back_to_menu)
@@ -156,3 +167,11 @@ class Game_Frame(Frame):
             master = master.master
         master.update()
         return [self.game_board.winfo_width(), self.game_board.winfo_height()]
+
+    def pause_popup(self):
+        self.pause_label = Label(self, background = "red", text = "Game Paused")
+        self.pause_label.place(x = 300, y = 100)
+        self.update_idletasks()
+
+    def remove_pause_popup(self):
+        self.pause_label.place_forget()

@@ -1,6 +1,7 @@
 from Frames import *
 from time import sleep
 from random import *
+from threading import Thread
 
 class Game():
 
@@ -8,23 +9,31 @@ class Game():
         self.app = app
         self.game_board = self.app.window.game_frame.game_board 
         self.snake = self.Snake(self)
-        self.snake = None
-        self.unpaused = False
+        self.paused = True
         self.edible = self.new_edible()
 
         # Settings
         self.taurus = True
 
     def start(self):
-        self.unpaused = True
+        self.paused = False
         sleep(1)
-        while self.unpaused:
+        while not self.paused:
             self.snake.advance()
             sleep(0.2)
 
     def pause(self, event):
-        self.unpaused = False
-        print("Game paused")
+        print(event)
+        self.paused = not self.paused
+        if self.paused:
+            self.game_board.master.pause_popup()
+            self.app.thread.join()
+            print("Game paused")
+        else:
+            self.game_board.master.remove_pause_popup()
+            self.app.thread = Thread(target = self.start)
+            self.app.thread.start()
+            print("Game Unpaused")
 
     def game_over(self):
         self.edible = self.new_edible()
