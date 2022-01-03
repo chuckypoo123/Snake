@@ -8,6 +8,7 @@ class Game():
         self.app = app
         self.game_board = self.app.window.game_frame.game_board 
         self.snake = self.Snake(self)
+        self.snake = None
         self.unpaused = False
         self.edible = self.new_edible()
 
@@ -30,11 +31,43 @@ class Game():
 
     def new_edible(self):
         edible_cell = randint(0, 50*30 - 1)
+
+        node_coords = self.game_board.coords(self.snake.head)
+        if edible_cell == int(node_coords[0] * 50 + node_coords[1]):
+            return self.new_edible()
+        for node in self.snake.nodes:
+            node_coords = self.game_board.coords(node)
+            if edible_cell == int(node_coords[0] * 50 + node_coords[1]):
+                return self.new_edible()
+
         edible_x = (edible_cell % 50) * 20
         edible_y = (edible_cell // 50) * 20
         # print(f"Coords of edible: {edible_x}, {edible_y}")
         return self.game_board.create_oval(edible_x, edible_y, edible_x + 19, edible_y + 19, fill = "red", width = 0)
-        
+    
+    '''
+    FUNCTION TO TEST: This should ensure an edible spawn on the snake (this function is used to test the logic avoiding the snake in new_edible() above)
+    def new_edible(self):
+        edible_cell = randint(0, 50*30 - 1)
+
+        if self.snake is not None:
+            node_coords = self.game_board.coords(self.snake.head)
+            if edible_cell == int(node_coords[0] * 50 + node_coords[1]):
+                return self.new_edible()
+            for node in self.snake.nodes:
+                node_coords = self.game_board.coords(node)
+                if edible_cell == int(node_coords[0] * 50 + node_coords[1]):
+                    edible_x = (edible_cell % 50) * 20
+                    edible_y = (edible_cell // 50) * 20
+                    return self.game_board.create_oval(edible_x, edible_y, edible_x + 19, edible_y + 19, fill = "red", width = 0)
+            return self.new_edible()
+        else:
+            edible_x = (edible_cell % 50) * 20
+            edible_y = (edible_cell // 50) * 20
+            # print(f"Coords of edible: {edible_x}, {edible_y}")
+            return self.game_board.create_oval(edible_x, edible_y, edible_x + 19, edible_y + 19, fill = "red", width = 0)
+    '''
+
     class Snake():
 
         def __init__(self, game):
