@@ -49,10 +49,11 @@ class Game_Window(Tk):
 
     def hide_game(self):
         self.game_frame.grid_forget()
-        self.game_frame.forget()
+        # self.game_frame.forget()
 
     def show_options(self):
-        pass
+        self.hide_menu()
+        self.game_frame.grid(sticky = NSEW)
 
     def start_game(self):
         self.hide_menu()
@@ -118,7 +119,7 @@ class Options_Frame(Frame):
 
     def __init__(self, container):
         super().__init__(container, bg = "green")
-        # self.columnconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
         self.rowconfigure((1, 2), weight = 2)
 
@@ -129,7 +130,8 @@ class Options_Frame(Frame):
         backButton.grid(column = 0, row = 1, sticky = EW)
 
     def back_to_menu(self):
-        pass
+        self.grid_forget()
+        self.master.show_menu()
 
 class Game_Frame(Frame):
 
@@ -148,7 +150,7 @@ class Game_Frame(Frame):
         self.toolbar_colour = 0x00B93E
         self.toolbar = Frame(self, background = "#00B93E")
         self.toolbar.columnconfigure(10, weight = 1)
-        back_button = Button(self.toolbar, text = "Return to Menu", command = self.back_to_menu)
+        back_button = Button(self.toolbar, text = "Return to Menu", command = self.master.stop_game)
         back_button.grid(column = 0, row = 0)
         points = Label(self.toolbar, text = "2")
         points.grid(column = 10, row = 0)
@@ -157,9 +159,6 @@ class Game_Frame(Frame):
         # Creating game canvas
         self.game_board = Canvas(self, background="green", highlightthickness = 0)
         self.game_board.grid(column = 0, row = 1, sticky = NSEW, padx = 3, pady = 3)
-
-    def back_to_menu(self):
-        self.master.stop_game()
 
     def get_game_board_dimensions(self) -> list:
         master = self.master
