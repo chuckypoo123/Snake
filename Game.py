@@ -7,12 +7,13 @@ class Game():
 
     def __init__(self, app):
         self.app = app
-        self.game_board = self.app.window.game_frame.game_board 
+        self.game_board = self.app.window.game_frame.game_board
+        self.options = self.app.window.options_frame # Options are stored in scales in the options_frame 
 
         # Settings
         self.paused = True
-        self.width = 50
-        self.height = 30
+        self.width = self.options.width_scale.get()
+        self.height = self.options.height_scale.get()
         self.pixel_scale = 20
         self.taurus = True
 
@@ -80,6 +81,13 @@ class Game():
             # print(f"Coords of edible: {edible_x}, {edible_y}")
             return self.game_board.create_oval(edible_x, edible_y, edible_x + self.pixel_scale - 1, edible_y + self.pixel_scale - 1, fill = "red", width = 0)
     '''
+
+    def remove_all(self):
+        self.game_board.delete(self.edible)
+        print(self.edible)
+        self.game_board.delete(self.snake.head)
+        for node in self.snake.nodes:
+            self.game_board.delete(node)
 
     class Snake():
 
